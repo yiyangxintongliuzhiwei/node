@@ -5,8 +5,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css' />
+    <link rel='stylesheet' href='/stylesheets/bootstrap-theme.css'>
 </head>
+<script src="/javascripts/jquery.js"></script>
+<script src="/javascripts/bootstrap.js"></script>
 <body>
-  <!-- 登陆成功 -->
+    <ul class="nav nav-pills">
+      <li role="presentation" class="active"><a href="#">老师</a></li>
+      <li role="presentation"><a href="#">男生</a></li>
+      <li role="presentation"><a href="#">女生</a></li>
+    </ul>
+    <table border="0" cellspacing='0' callpadding='0' style="width: 460px">
+      <thead>
+        <tr>
+          <th>姓名</th>
+          <th>年龄</th>
+          <th>联系方式</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>张三</td>
+          <td>18</td>
+          <td>15735807165</td>
+          <td><button>删除</button><button>修改</button></td>
+        </tr>
+        <tr>
+            <td>张三</td>
+            <td>18</td>
+            <td>15735807165</td>
+            <td><button>删除</button><button>修改</button></td>
+          </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td><button>添加</button></td>
+        </tr>
+      </tfoot>
+    </table>
 </body>
+<script>
+  $.ajax({
+    type: 'GET',
+    url: '/menu',
+    success: function(result) {
+      $('.nav').empty(); 
+      var text = `
+        <li role="presentation" class="active"><a href="#">${JSON.parse(result).data[2]}</a></li>
+        <li role="presentation"><a href="#">${JSON.parse(result).data[0]}</a></li>
+        <li role="presentation"><a href="#">${JSON.parse(result).data[1]}</a></li>
+      `
+      $('.nav').html(text)
+    }
+  })
+  $.ajax({
+    type: 'GET',
+    url: '/menu/student',
+    success: function(result) {
+      result = JSON.parse(result)
+      $('tbody').empty();
+      for (let i = 0; i < result.data.length; i++) {
+        $('tbody').append(
+          `<tr>
+             <td>${result.data[i].name}</td>
+             <td>${result.data[i].age}</td>
+             <td>${result.data[i].tel}</td>
+             <td><button class='delete'>删除</button><button>修改</button></td>
+           </tr>`
+        )
+      }
+      $('.delete').click(function() {
+        var tablename = $(this).parent().parent().children(":first").text()
+        // console.log($(this).parent().parent().children(":first").text())
+        $.ajax({
+          type: 'DELETE',
+          url: '/menu/student/delete',
+          data: {
+            name: tablename
+          },
+          success: function(result) {
+            if (result == 'ok') {
+              window.location.reload()
+            }
+          }
+        })
+      })
+    }
+  })
+</script>
 </html>

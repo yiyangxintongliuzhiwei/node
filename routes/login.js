@@ -25,4 +25,44 @@ router.post('/login', function(req, res, next) {
     }
   })
 })
+router.get('/menu', function(req, res, next) {
+  var obj = {message: 'ok', data: [
+    '男生',
+    '女生',
+    '教师'
+  ]}
+  res.writeHead(200, {'Content-Type': 'text/plain; charset=utf-8'});
+  res.end(JSON.stringify(obj))
+});
+router.get('/menu/student', function(req, res, next) {
+  var sql = `select * from student`
+  mysql.query(sql, function(err, result) {
+    if (err) {
+      var obj = {message:"err",data:{}}
+      res.end(JSON.stringify(obj));
+    } else {
+      var obj = {
+        message: 'ok',
+        data: result
+      }
+      res.end(JSON.stringify(obj))
+    }
+  })
+})
+router.delete('/menu/student/delete', function(req, res, next) {
+  var name = req.body.name
+  var sql = `delete from student where name = '${name}'`
+  mysql.query(sql, function(err, result){
+    if (err) {
+      var obj = {message:"err",data:{}}
+      res.end(JSON.stringify(obj));
+    } else {
+      if(result.affectedRows > 0){
+        res.end("ok");
+      }else{
+        res.end("err");
+      }
+    }
+  })
+})
 module.exports = router;
