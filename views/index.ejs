@@ -42,10 +42,16 @@
       </tbody>
       <tfoot>
         <tr>
-          <td><button>添加</button></td>
+          <td><button class="add">添加</button></td>
         </tr>
       </tfoot>
     </table>
+    <div class="addbox" style="width: 300px;height: 200px">
+      <input type="text" placeholder="请输入名字" value="" id="name">
+      <input type="text" placeholder="年龄" value="" id="age">
+      <input type="text" placeholder="电话" value="" id="tel">
+      <button class="submit">确认</button>
+    </div>
 </body>
 <script>
   $.ajax({
@@ -79,7 +85,6 @@
       }
       $('.delete').click(function() {
         var tablename = $(this).parent().parent().children(":first").text()
-        // console.log($(this).parent().parent().children(":first").text())
         $.ajax({
           type: 'DELETE',
           url: '/menu/student/delete',
@@ -94,6 +99,32 @@
         })
       })
     }
+  })
+  $('.addbox').hide()
+  $('.add').click(function() {
+    $('table').hide()
+    $('.addbox').show()
+  })
+  $('.submit').click(function() {
+    var addname = $('#name').val()
+    var addage = $('#age').val()
+    var addtel = $('#tel').val()
+    $.ajax({
+      type: 'POST',
+      url: '/menu/student/add',
+      data: {
+        name: addname,
+        age: addage,
+        tel: addtel
+      },
+      success: function(result) {
+        if (result == 'ok') {
+          $('.addbox').hide()
+          $('table').show()
+          window.location.reload()
+        }
+      }
+    })
   })
 </script>
 </html>
