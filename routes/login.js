@@ -83,4 +83,23 @@ router.post('/menu/student/add', function(req, res, next) {
     }
   })
 })
+router.post('/menu/student/update', function(req, res, next) {
+  var name = req.body.name
+  var age = req.body.age
+  var tel = req.body.tel
+  console.log(name)
+  var sql = `update student set age = '${age}', tel = '${tel}' where name = '${name}'`
+  mysql.query(sql, function(err, result) {
+    if (err) {
+      var obj = {message:"err",data:{}}
+      res.end(JSON.stringify(obj));
+    } else {
+      if(result.affectedRows > 0){
+        res.end("ok");
+      }else{
+        res.end("err");
+      }
+    }
+  })
+})
 module.exports = router;

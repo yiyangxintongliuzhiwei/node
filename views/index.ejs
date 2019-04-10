@@ -52,8 +52,16 @@
       <input type="text" placeholder="电话" value="" id="tel">
       <button class="submit">确认</button>
     </div>
+    <div class="upbox" style="width: 300px;height: 200px">
+        <input type="text" placeholder="请输入名字" value="" id="names" disabled>
+        <input type="text" placeholder="年龄" value="" id="ages">
+        <input type="text" placeholder="电话" value="" id="tels">
+        <button class="submits">确认</button>
+      </div>
 </body>
 <script>
+  $('.addbox').hide()
+  $('.upbox').hide()
   $.ajax({
     type: 'GET',
     url: '/menu',
@@ -79,7 +87,7 @@
              <td>${result.data[i].name}</td>
              <td>${result.data[i].age}</td>
              <td>${result.data[i].tel}</td>
-             <td><button class='delete'>删除</button><button>修改</button></td>
+             <td><button class='delete'>删除</button><button class='update'>修改</button></td>
            </tr>`
         )
       }
@@ -98,9 +106,35 @@
           }
         })
       })
+      $('.update').click(function() {
+        var tablenames = $(this).parent().parent().children(":first").text()
+        var tableages = $(this).parent().parent().children('td').eq(1).text()
+        var tabletels = $(this).parent().parent().children('td').eq(2).text()
+        $('table').hide()
+        $('.upbox').show()
+        $('#names').val(tablenames)
+        $('#ages').val(tableages)
+        $('#tels').val(tabletels)
+      })
+      $('.submits').click(function() {
+        $.ajax({
+          type: 'POST',
+          url: '/menu/student/update',
+          data: {
+            name: $('#names').val(),
+            age: $('#ages').val(),
+            tel: $('#tels').val()
+          },
+          success: function(result) {
+            console.log(result)
+            $('.upbox').hide()
+            $('table').show()
+            window.location.reload()
+          }
+        })
+      })
     }
   })
-  $('.addbox').hide()
   $('.add').click(function() {
     $('table').hide()
     $('.addbox').show()
